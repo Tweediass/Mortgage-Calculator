@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="loanPeriod">
+        <item>1年</item>
+        <item>3年</item>
+        <item>5年</item>
+        <item>10年</item>
+        <item>20年</item>
+        <item>30年</item>
+    </string-array>
+</resources>

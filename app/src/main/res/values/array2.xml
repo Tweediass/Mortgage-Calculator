@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="benchmarkInterestRate">
+        <item>2017年最新央行基准利率</item>
+        <item>2018年最新央行基准利率</item>
+        <item>2019年最新央行基准利率</item>
+    </string-array>
+</resources>
