@@ -1,6 +1,5 @@
 package com.example.a38experiment;
 
-import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -29,16 +28,14 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner1;
     private Spinner spinner2;
 
-    String price;//总价
-    String loan;//按揭部分
     double totalPrice;//贷款总额
-    int time = 0;//贷款总月数
-    double comMonIntRate = 0;//商贷月利率
-    double proMonIntRate = 0;//公积金月利率
-    double comLoan = 0;//商贷
-    double proFund = 0;//公积金
-    boolean comLoanFlag = false;//是否商贷
-    boolean proFundFlag = false;//是否公积金
+    int time;//贷款总月数
+    double comMonIntRate;//商贷月利率
+    double proMonIntRate;//公积金月利率
+    double comLoan;//商贷
+    double proFund;//公积金
+    boolean comLoanFlag;//是否商贷
+    boolean proFundFlag;//是否公积金
     double monRepayment;//每月还款总额
     double totalRepayment;//还款总额
     double ratePayment;//利息总额
@@ -49,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-
 
         // 建立数据源
         String[] loanPeriod = getResources().getStringArray(R.array.loanPeriod);
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 return setCentered(super.getDropDownView(position, convertView, parent));
             }
 
-            @SuppressLint("ResourceAsColor")
             private View setCentered(View view) {
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
                 textView.setGravity(Gravity.CENTER);
@@ -104,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = editText1.getText().toString();
-                loan = editText2.getText().toString();
+                String price = editText1.getText().toString();//购房总价
+                String loan = editText2.getText().toString();//按揭部分
                 totalPrice = Double.valueOf(price).doubleValue() * Double.valueOf(loan).doubleValue() / 100;
                 textView5.setText("您的贷款总额为: " + totalPrice + "万元");
             }
@@ -167,43 +162,20 @@ public class MainActivity extends AppCompatActivity {
 
     //业务逻辑
     private void logic() {
+    	comLoanFlag = false;
+    	proFundFlag = false;
+    	comLoan = 0;
+    	proFund = 0;
         time = Integer.valueOf(spinner1.getSelectedItem().toString().replace("年", "")).intValue() * 12;
-        switch (spinner2.getSelectedItemPosition()) {
-            case 0:
-                if (checkBox1.isChecked()) {
-                    comMonIntRate = rate[0][1] / 12;
-                    comLoan = Double.valueOf(editText3.getText().toString()).doubleValue();
-                    comLoanFlag = true;
-                }
-                if (checkBox2.isChecked()) {
-                    proMonIntRate = rate[0][2] / 12;
-                    proFund = Double.valueOf(editText4.getText().toString()).doubleValue();
-                    proFundFlag = true;
-                }
-                break;
-            case 1:
-                if (checkBox1.isChecked()) {
-                    comMonIntRate = rate[1][1] / 12;
-                    comLoan = Double.valueOf(editText3.getText().toString()).doubleValue();
-                    comLoanFlag = true;
-                }
-                if (checkBox2.isChecked()) {
-                    proMonIntRate = rate[1][2] / 12;
-                    proFund = Double.valueOf(editText4.getText().toString()).doubleValue();
-                    proFundFlag = true;
-                }
-                break;
-            case 2:
-                if (checkBox1.isChecked()) {
-                    comMonIntRate = rate[2][1] / 12;
-                    comLoan = Double.valueOf(editText3.getText().toString()).doubleValue();
-                    comLoanFlag = true;
-                }
-                if (checkBox2.isChecked()) {
-                    proMonIntRate = rate[2][2] / 12;
-                    proFund = Double.valueOf(editText4.getText().toString()).doubleValue();
-                    proFundFlag = true;
-                }
+        if (checkBox1.isChecked()) {
+        	comMonIntRate = rate[spinner2.getSelectedItemPosition()][1] / 12;
+        	comLoan = Double.valueOf(editText3.getText().toString()).doubleValue();
+        	comLoanFlag = true;
+        }
+        if (checkBox2.isChecked()) {
+        	proMonIntRate = rate[spinner2.getSelectedItemPosition()][2] / 12;
+        	proFund = Double.valueOf(editText4.getText().toString()).doubleValue();
+        	proFundFlag = true;
         }
     }
 
@@ -214,15 +186,11 @@ public class MainActivity extends AppCompatActivity {
         //商贷计算
         if (comLoanFlag) {
             comLoan = comMonIntRate * Math.pow((1 + comMonIntRate), time) * comLoan / (Math.pow((1 + comMonIntRate), time) - 1);
-        } else {
-            comLoan = 0;
         }
 
         //公积金计算
         if (proFundFlag) {
             proFund = proMonIntRate * Math.pow((1 + proMonIntRate), time) * proFund / (Math.pow((1 + proMonIntRate), time) - 1);
-        } else {
-            proFund = 0;
         }
     }
 
